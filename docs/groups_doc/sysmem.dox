@@ -1,0 +1,22 @@
+/**
+ * @addtogroup uid_class
+ * UID Class
+ */
+
+/**
+ * @addtogroup uid_heap
+ * Generic heap interface
+ */
+
+/**
+ * @addtogroup oheap
+ *
+ * Object Heaps are per-process objects used to perform memory allocations.
+ * They are used to ensure a process cannot allocate more resources of a
+ * certain type than allowed by a configurable limit. Under the hood,
+ * memory is allocated from one of various heaps (usually(?) per-process).
+ *
+ * The Object Heap also implements a memory re-use mechanism which retains
+ * the allocations of a configurable amount of objects in a freelist, such
+ * that allocations can be serviced without calling the underlying heaps.
+ */

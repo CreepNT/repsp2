@@ -1,0 +1,9 @@
+/**
+ * @defgroup sysmem Sysmem
+ * System Memory Manager
+ * @{
+ *  @defgroup uid_class UID Class
+ *  @defgroup uid_heap Generic heap interface
+ * 	@defgroup oheap Object Heap
+ * @}
+ */
