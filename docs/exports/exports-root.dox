@@ -1,0 +1,19 @@
+/*
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * DON'T FORGET TO ADD MODULES TO THE LIST
+ * WHEN INTRODUCING NEW ONES WITH EXPORTS,
+ * AND KEEP THE LIST SORTED BY MODULE NAME
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ */
+
+/**
+@page exports Exports
+
+Due to Doxygen restrictions, exports are documented in this separate section.
+Each module is a subpage of this one, and each library exported by a module
+is in its own subpage of the exporter module's page.
+
+The following modules export one or more libraries:
+
+- @subpage exportsModule_SceSysmem
+*/

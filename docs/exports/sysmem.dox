@@ -1,0 +1,240 @@
+/**
+@page exportsModule_SceSysmem SceSysmem
+@ref sysmem "SceSysmem" exports the following libraries:
+	- @subpage exportsLib_SceCpu
+	- @subpage exportsLib_SceCpuForDriver
+	- @subpage exportsLib_SceCpuForKernel
+	- @subpage exportsLib_SceDebugForDriver
+	- @subpage exportsLib_SceDebugForKernel
+	- @subpage exportsLib_SceDebugLed
+	- @subpage exportsLib_SceDebugLedForDriver
+	- @subpage exportsLib_SceDipsw
+	- @subpage exportsLib_SceDipswForDriver
+	- @subpage exportsLib_SceKernelSuspendForDriver
+	- @subpage exportsLib_SceKernelUtilsForDriver
+	- @subpage exportsLib_ScePmMgrForDriver
+	- @subpage exportsLib_SceProcEventForDriver
+	- @subpage exportsLib_SceQafMgrForDriver
+	- @subpage exportsLib_SceSblAIMgrForDriver
+	- @subpage exportsLib_SceSysclibForDriver
+	- @subpage exportsLib_SceSysclibForKernel
+	- @subpage exportsLib_SceSysmem
+	- @subpage exportsLib_SceSysmemForDebugger
+	- @subpage exportsLib_SceSysmemForDriver
+	- @subpage exportsLib_SceSysmemForKernel
+	- @subpage exportsLib_SceSysrootForKernel
+	- @subpage exportsLib_SceUartForKernel
+
+@page exportsLib_SceCpu SceCpu
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0x45265161
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceCpuForDriver SceCpuForDriver
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0x40ECDB0E
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceCpuForKernel SceCpuForKernel
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~3.61<td>0x54BF2BAB
+<tr><td>3.63~9.99<td>0xA5195D20
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceDebugForDriver SceDebugForDriver
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0x88758561
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceDebugForKernel SceDebugForKernel
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~3.61<td>0x88C17370
+<tr><td>3.63~9.99<td>0x13D793B7
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceDebugLed SceDebugLed
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0xAE004C0A
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceDebugLedForDriver SceDebugLedForDriver
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0x7BC05EAD
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceDipsw SceDipsw
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0xB36D5922
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceDipswForDriver SceDipswForDriver
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0xC9E26388
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceKernelSuspendForDriver SceKernelSuspendForDriver
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0x7290B21C
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceKernelUtilsForDriver SceKernelUtilsForDriver
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0x496AD8B4
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_ScePmMgrForDriver ScePmMgrForDriver
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0xF13F32F9
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceProcEventForDriver SceProcEventForDriver
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0x887F19D0
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceQafMgrForDriver SceQafMgrForDriver
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0x4E29D3B6
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceSblAIMgrForDriver SceSblAIMgrForDriver
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0xFD00C69A
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceSysclibForDriver SceSysclibForDriver
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0x7EE45391
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceSysclibForKernel SceSysclibForKernel
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0x24878615
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceSysmem SceSysmem
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0x37FE725A
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceSysmemForDebugger SceSysmemForDebugger
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0xC7309957
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceSysmemForDriver SceSysmemForDriver
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~9.99<td>0x6F25E18A
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceSysmemForKernel SceSysmemForKernel
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~3.61<td>0x63A519E5
+<tr><td>3.63~9.99<td>0x02451F0F
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceSysrootForKernel SceSysrootForKernel
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~3.61<td>0x3691DA45
+<tr><td>3.63~9.99<td>0x2ED7F97A
+</table>
+
+The following functions and/or variables are exported by this library:
+
+@page exportsLib_SceUartForKernel SceUartForKernel
+<table>
+<caption>Library NID(s)</caption>
+<tr><th>Firmware Version<th>NID
+<tr><td>0.00~3.61<td>0xC03DBE40
+<tr><td>3.63~9.99<td>0x1CCD9BA3
+</table>
+
+The following functions and/or variables are exported by this library:
+
+*/

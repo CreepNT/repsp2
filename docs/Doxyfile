@@ -290,10 +290,8 @@ TAB_SIZE               = 8
 # with the commands \{ and \} for these it is advised to use the version @{ and
 # @} or use a double escape (\\{ and \\})
 
-ALIASES                = "additionalExport{2}=* `\1_\2`" \
-                         "additionalExport{3}=* `\1_\2` (old) / `\1_\3` (new)" \
-                         "export{2}=\par Exported as^^\additionalExport{\1,\2}" \
-                         "export{3}=\par Exported as^^\additionalExport{\1,\2,\3}" \
+ALIASES                = "export{2}=\xrefitem exportsLib_\1 \"Exported by \1\" \"\" NID: 0x\2^^" \
+                         "export{3}=\xrefitem exportsLib_\1 \"Exported by \1\" \"\" Old NID: 0x\2<br>New NID: 0x\3^^" \
                          "returns_sceerr=@retval SCE_OK Success^^@retval <SCE_OK Error code" \
                          "sfnok=\note This field name is official." \
                          "varok=\note This variable name is official." \
@@ -1018,7 +1016,8 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = groups.dox \
+INPUT                  = exports \
+                         groups.dox \
                          groups_doc \
                          ../kernel \
                          ../common

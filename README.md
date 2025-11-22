@@ -85,16 +85,14 @@ The following custom Doxygen commands are used in this project:
 * `@returns_scerr`: generic boilerplate indicating the function returns
   `SCE_OK` on success, and a negative error code otherwise
 
-* Export indicators
-	* `@export{<library name>,<NID>}` / `@export{<library name>,<old NID>,<new NID>}`:
-	  indicates function/variable is exported by library `library name`
-	  * When two arguments are provided, the NID is the same in all firmware versions
-	  * When three arguments are provided, `old NID` is used in pre-3.63 firmwares and
-	    `new NID` is used in 3.63+ firmwares
-	  * `NID` should not have `0x` prefix
-	* `@additionalExport{<library name>,<NID>}`/`@additionalExport{<library name>,<old NID>,<new NID>}`:
-	  **following an `@export` directive**, this annotation can be added to function/variables exported
-	  by different libraries. Usage is identical to `@export`.
+* `@export{<library name>,<NID>}` / `@export{<library name>,<old NID>,<new NID>}`:
+  indicates function/variable is exported by library `library name`
+	* When two arguments are provided, the NID is the same in all firmware versions
+	* When three arguments are provided, `old NID` is used in pre-3.63 firmwares and
+	  `new NID` is used in 3.63+ firmwares
+	* `NID` should be `0`-padded to eight characters, but not have `0x` prefix
+	* _This command can be used multiple times on the same function/variable_
+		* In such situations, please order by library name.
 
 * Official names indicators
 	* `@varok`: indicates variable name is official
