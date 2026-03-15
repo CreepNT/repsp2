@@ -21,6 +21,8 @@ struct HeapDescriptor {
  * @{
  */
 
+#pragma region Public structures definitions
+
 /** Object Heap structure */
 typedef struct {
 	SceKernelSpinlock lock;
@@ -42,6 +44,9 @@ typedef struct {
 	} per_type_info[OHEAP_RESOURCE_TYPES_NUM];
 } ObjectHeap;
 
+#pragma endregion
+
+#pragma	region Private functions signatures
 
 /** @todo documentation + maybe this is private? */
 void ObjectHeap_init(
@@ -99,20 +104,9 @@ SceBool ObjectHeapAllocLimit(ObjectHeap *pObjectHeap, SceUInt32 type, ScePVoid *
  */
 SceBool ObjectHeapFree(ObjectHeap *pObjectHeap, SceUInt32 type, ScePVoid pObject);
 
+#pragma endregion
 
-
-
-
-/*
- *====================================================
- *           Exported functions & variables
- *====================================================
- */
-
-
-
-
-
+#pragma region Exported functions signatures
 /**
  * @brief Obtain pointer to the kernel's object heap
  * @export{SceSysmemForKernel,?,857408DA}
@@ -223,6 +217,7 @@ ScePVoid sceKernelObjectHeapAlloc(ObjectHeap *pObjectHeap, SceSize size);
  * @export{SceSysmemForKernel,?,17D3D4BD}
  */
 SceInt32 sceKernelObjectHeapFree(ObjectHeap *pObjectHeap, SceSize size, ScePVoid ptr);
+#pragma endregion
 
 /** @} */
 
