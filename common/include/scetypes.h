@@ -248,4 +248,9 @@ typedef char *SceName;
 typedef SceInt64 SceOff;
 typedef SceUID ScePID;
 
+#pragma region Annotations
+/** Function does not return */
+#define noreturn
+#pragma endregion
+
 #endif /* _TYPES_H */
