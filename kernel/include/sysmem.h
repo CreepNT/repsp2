@@ -1,6 +1,6 @@
 
-#ifndef _SYSMEM_H_
-#define _SYSMEM_H_
+#ifndef _SCE_KERNEL_SYSMEM_H_
+#define _SCE_KERNEL_SYSMEM_H_
 
 #include <scetypes.h>
 #include <sysmem/oheap.h>
@@ -8,4 +8,4 @@
 #include <sysmem/uid_class.h>
 #include <sysmem/uid_heap.h>
 
-#endif /* _SYSMEM_H_ */
+#endif /* _SCE_KERNEL_SYSMEM_H_ */

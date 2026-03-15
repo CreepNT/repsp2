@@ -1,6 +1,6 @@
 
-#ifndef _SYSMEM_OHEAP_H_
-#define _SYSMEM_OHEAP_H_
+#ifndef _SCE_KERNEL_SYSMEM_OHEAP_H_
+#define _SCE_KERNEL_SYSMEM_OHEAP_H_
 
 #include <scetypes.h>
 #include <sysmem/spinlock.h>
@@ -221,4 +221,4 @@ SceInt32 sceKernelObjectHeapFree(ObjectHeap *pObjectHeap, SceSize size, ScePVoid
 
 /** @} */
 
-#endif /* _SYSMEM_OHEAP_H_ */
+#endif /* _SCE_KERNEL_SYSMEM_OHEAP_H_ */

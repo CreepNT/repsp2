@@ -1,6 +1,6 @@
 
-#ifndef _SYSMEM_SPINLOCK_H_
-#define _SYSMEM_SPINLOCK_H_
+#ifndef _SCE_KERNEL_SYSMEM_SPINLOCK_H_
+#define _SCE_KERNEL_SYSMEM_SPINLOCK_H_
 
 #include <scetypes.h>
 
@@ -15,4 +15,4 @@ typedef SceUInt32 SceKernelSpinlock;
  */
 typedef SceUInt32 SceKernelRWSpinlock;
 
-#endif /* _SYSMEM_SPINLOCK_H_ */
+#endif /* _SCE_KERNEL_SYSMEM_SPINLOCK_H_ */

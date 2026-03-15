@@ -1,6 +1,6 @@
 
-#ifndef _SYSMEM_UID_CLASS_H_
-#define _SYSMEM_UID_CLASS_H_
+#ifndef _SCE_KERNEL_SYSMEM_UID_CLASS_H_
+#define _SCE_KERNEL_SYSMEM_UID_CLASS_H_
 
 #include <scetypes.h>
 
@@ -39,4 +39,4 @@ struct SceClass {
 
 /** @} */
 
-#endif /* _SYSMEM_UID_CLASS_H_ */
+#endif /* _SCE_KERNEL_SYSMEM_UID_CLASS_H_ */

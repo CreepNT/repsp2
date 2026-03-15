@@ -1,6 +1,6 @@
 
-#ifndef _SYSMEM_UID_HEAP_H_
-#define _SYSMEM_UID_HEAP_H_
+#ifndef _SCE_KERNEL_SYSMEM_UID_HEAP_H_
+#define _SCE_KERNEL_SYSMEM_UID_HEAP_H_
 
 #include <scetypes.h>
 #include <sysmem/oheap.h>
@@ -67,4 +67,4 @@ SceInt32 UIDHeapCallAlloc(SceUIDHeap *pHeap, SceUInt32 size, ScePVoid *ppObject)
 SceInt32 UIDHeapCallFree(SceUIDHeap *pHeap, ScePVoid pObject);
 /** @} */
 
-#endif /* _SYSMEM_UID_HEAP_H_ */
+#endif /* _SCE_KERNEL_SYSMEM_UID_HEAP_H_ */
