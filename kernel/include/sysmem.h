@@ -5,6 +5,7 @@
 #include <scetypes.h>
 #include <sysmem/oheap.h>
 #include <sysmem/spinlock.h>
+#include <sysmem/sysclib.h>
 #include <sysmem/uid_class.h>
 #include <sysmem/uid_heap.h>
 
