@@ -653,7 +653,7 @@ reset_handler: @ Address: 0x400203A0
 	cpy	r0, lr
 	blx	boot_prefetch_abort_handler
 	clrex
-	ldmia	sp!, {r0-r12, pc}^
+	ldmia	sp!, {r0-r3, r12, pc}^
 
 .Ldata_abort_handler: @ Address: 0x400203E8
 	sub	lr, lr, #8
@@ -666,7 +666,6 @@ reset_handler: @ Address: 0x400203A0
 .Lirq_handler: @ Address: 0x40020400
 	sub	lr, lr, #4
 	stmdb	sp!, {r0-r3, r12, lr}
-	cpy	r0, lr
 	blx	boot_irq_abort_handler
 	clrex
 	ldmia	sp!, {r0-r3, r12, pc}^
@@ -674,7 +673,6 @@ reset_handler: @ Address: 0x400203A0
 .Lfiq_handler: @ Address: 0x40020414
 	sub	lr, lr, #4
 	stmdb	sp!, {r0-r3, r12, lr}
-	cpy	r0, lr
 	blx	boot_fiq_abort_handler
 	clrex
 	ldmia	sp!, {r0-r3, r12, pc}^
