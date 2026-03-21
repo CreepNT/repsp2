@@ -737,6 +737,7 @@ reset_handler: @ Address: 0x400203A0
 	ldmia	sp!, {r0-r3, r12, pc}^
 
 @ NOP padding (ARM) until 0x40020430
+	.balign	0x10
 
 @ These functions are extremely trivial so it is
 @ surprising they weren't inlined. They must have
@@ -749,13 +750,13 @@ reset_handler: @ Address: 0x400203A0
 fun_40020430:
 	mov.w	r0, #0x12C
 	bx	lr
-	@ one Thumb NOP as padding
+	.balign	0x8		@ one Thumb NOP as padding
 
 	.global	fun_40020438
 fun_40020438:
 	mov.w	r0, #0x11C
 	bx	lr
-	@ one Thumb NOP as padding
+	.balign	0x8		@ one Thumb NOP as padding
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
