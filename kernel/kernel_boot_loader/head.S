@@ -577,12 +577,12 @@ _start:
 
 .Llab_40020350:
 	@ note: the addresses are identical here
-	@ but inverted for memcpy()
 	movw	r0, #0xA800
 	movt	r0, #0x4007
 	movw	r1, #0xA870
 	movt	r1, #0x4007
 	sub	r2, r1, r0
+	@ ...but inverted for memcpy() src/dst!
 	movw	r0, #0xA870
 	movt	r0, #0x4007
 	movw	r1, #0xA800
