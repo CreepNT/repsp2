@@ -123,8 +123,13 @@
 	.global dat_4007a800
 
 
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Start of KBL segment 1 head
+@@@@@@@@@@@@@@@@@@@@@@@@@
+
 	.arm
 	.text
+	.section	".text.head"
 	.global _start @ Address: 0x40020000
 _start:
 	@
@@ -589,17 +594,18 @@ lab_4002038c:
 	msr	cpsr_x, r0
 
 	@ Jump to next stage...
-	ldr	pc, =next_stage
+	ldr	pc, =reset_handler
 
 @ Address 0x4002039C: constant pool of this function
-@ containing one entry (address of next_stage)
-
-next_stage: @ Address: 0x400203A0
-	@ Jump to C KBL entrypoint
-	blx	boot
+@ containing one entry (address of reset_handler)
 
 @
 @ KBL Boot exception handlers
+@
+@ We can infer they are in a separate section because
+@ the constant pool would otherwise be merged with that
+@ of `_start`, but that is not what we can see in the
+@ KBL binaries.
 @
 	@ Make C handlers visible
 	.global boot_und_handler
@@ -608,6 +614,12 @@ next_stage: @ Address: 0x400203A0
 	.global boot_data_abort_handler
 	.global boot_irq_handler
 	.global boot_fiq_handler
+
+	.text
+	.section	".text.head2"
+reset_handler: @ Address: 0x400203A0
+	@ Jump to C KBL entrypoint
+	blx	boot
 
 und_handler: @ Address: 0x400203A4
 	sub	lr, lr, #4
@@ -660,8 +672,9 @@ fiq_handler: @ Address: 0x40020414
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-	@ may have been written in C?
-fun_40020a68:
+	.text
+	.section	".text.long_after_head"
+fun_40020a68:	@ Address: 0x40020a68 - may have been written in C?
 	@ read CPU ID
 	mrc	p15, #0, r3, c0, c0, #5		@ MPIDR
 	and	r3, r3, #0xF
