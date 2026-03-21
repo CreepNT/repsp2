@@ -128,10 +128,10 @@
 	.syntax unified
 
 @ Imported functions
-	.global memcpy
+	.global	memcpy
 
 @ Imported data
-	.global dat_4007a800
+	.global	dat_4007a800
 
 
 @@@@@@@@@@@@@@@@@@@@@@@@@
@@ -141,7 +141,7 @@
 	.arm
 	.text
 	.section	".text.head"
-	.global _start @ Address: 0x40020000
+	.global	_start @ Address: 0x40020000
 _start:
 	@
 	@ Kernel Boot Loader entrypoint
@@ -619,12 +619,12 @@ lab_4002038c:
 @ KBL binaries.
 @
 	@ Make C handlers visible
-	.global boot_und_handler
-	.global boot_svc_handler
-	.global boot_prefetch_abort_handler
-	.global boot_data_abort_handler
-	.global boot_irq_handler
-	.global boot_fiq_handler
+	.global	boot_und_handler
+	.global	boot_svc_handler
+	.global	boot_prefetch_abort_handler
+	.global	boot_data_abort_handler
+	.global	boot_irq_handler
+	.global	boot_fiq_handler
 
 	.text
 	.section	".text.head2"
