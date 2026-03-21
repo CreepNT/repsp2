@@ -670,8 +670,28 @@ fiq_handler: @ Address: 0x40020414
 
 @ NOP padding (ARM) until 0x40020430
 
+@ These functions are extremely trivial so it is
+@ surprising they weren't inlined. They must have
+@ either been assembly or in a dedicated C file.
+@
+@ For proper binary ordering, put them in ASM here.
+
+	.thumb
+	.global	fun_40020430
+fun_40020430:
+	mov.w	r0, #0x12C
+	bx	lr
+	@ one Thumb NOP as padding
+
+	.global	fun_40020438
+fun_40020438:
+	mov.w	r0, #0x11C
+	bx	lr
+	@ one Thumb NOP as padding
+
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
+	.arm
 	.text
 	.section	".text.long_after_head"
 fun_40020a68:	@ Address: 0x40020a68 - may have been written in C?
