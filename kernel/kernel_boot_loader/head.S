@@ -42,7 +42,18 @@
 #define L2C_OFF_REG1_CTRL	0x100
 
 ///// ARM CPU SPECIFIC DEFINITIONS
-#define SCTLR_A			(1 << 1) /* Alignment fault checking */
+#define SCTLR_TE		(1 << 30)	/* Exceptions taken in Thumb state */
+#define SCTLR_AFE		(1 << 29)	/* Access flag enable */
+#define SCTLR_TRE		(1 << 28)	/* TEX remap enable */
+#define	SCTLR_EE		(1 << 25)	/* Exception Endianness (0=LE,1=BE) */
+#define SCTLR_RR		(1 << 14)	/* Round Robin cache replacement */
+#define SCTLR_V			(1 << 13)	/* Vectors remap bit (1=Hivecs) */
+#define SCTLR_I			(1 << 12)	/* Instruction cache enable */
+#define SCTLR_Z			(1 << 11)	/* Branch prediction enable */
+#define SCTLR_SW		(1 << 10)	/* SWP/SWPB enable */
+#define SCTLR_C			(1 << 2)	/* Data & unified cache enable */
+#define SCTLR_A			(1 << 1)	/* Alignment fault checking */
+#define SCTLR_M			(1 << 0)	/* MMU enable */
 
 
 
@@ -144,24 +155,24 @@ _start:
 	@ Clear exclusive monitor reservations
 	clrex
 
-	@ Silly instruction sequence
-	@ May be the side effect of using a macro?
-	@
-	@ TODO: use macros in place of the raw hex values
+	@ Disable many features by clearing SCTLR.
+	@ This sequence is a bit silly since it clears
+	@ bits from a value already initialized to 0...
+	@ Maybe the side effect of using a macro?
 	mov	r0, #0
-	bic 	r0, #0x40000000
-	bic	r0, #0x10000000
-	bic	r0, #0x20000000
-	bic	r0, #0x02000000
-	bic	r0, #0x00004000
-	bic	r0, #0x00002000
-	bic	r0, #0x00001000
-	bic	r0, #0x00000800
-	bic	r0, #0x00000400
+	bic 	r0, #SCTLR_TE
+	bic	r0, #SCTLR_TRE
+	bic	r0, #SCTLR_AFE
+	bic	r0, #SCTLR_EE
+	bic	r0, #SCTLR_RR
+	bic	r0, #SCTLR_V
+	bic	r0, #SCTLR_I
+	bic	r0, #SCTLR_Z
+	bic	r0, #SCTLR_SW
 	bic	r0, #SCTLR_A
-	bic	r0, #0x00000004
-	bic	r0, #0x00000001
-	mcr	p15, #0, r0, c1, c0, #0  @ SCTLR
+	bic	r0, #SCTLR_C
+	bic	r0, #SCTLR_M
+	mcr	p15, #0, r0, c1, c0, #0
 
 	@  - ICIALLUIS: invalidate I$ PoU IS
 	@  - BPIALLIS:  invalidate branch predictor
