@@ -404,8 +404,8 @@ lab_40020128:
 	cpsid	if, #MODE_SYS
 	movw	sp, #:lower16:SYS_STACK_BASE
 	movt	sp, #:upper16:SYS_STACK_BASE
-	sub	sp, sp, r0
-	cpy	lr, r1
+	sub	sp, sp, r0, lsl #2		@ Use 4x larger stack (4 KiB) for System mode
+	cpy	lr, r1				@ because that's the mode in which KBL executes
 	msr	spsr_cxsf, r1	@ BUG!!!
 
 	@ Initialize monitor mode
@@ -478,7 +478,7 @@ lab_40020128:
 	@ Disable the SCU and address filtering
 	mov	r1, #SCU_BASE
 	mov	r0, #0
-	bic	r0, r0, #(SCU_CTRL_ENABLE | SCU_CTRL_ADFLTR_EN)
+	bic	r0, r0, #(SCU_CTRL_ENABLE | SCU_CTRL_ADDR_FLTR_EN)
 	str	r0, [r1, #SCU_OFF_CTRL]
 
 	@ Invalidate all SCU lines for all CPUs
