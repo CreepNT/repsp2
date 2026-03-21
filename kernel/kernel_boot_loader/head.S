@@ -133,6 +133,65 @@
 @ Imported data
 	.global	dat_4007a800
 
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@ kernel_boot_loader.self segment 0
+@ (exception vector + misc. stuff)
+@
+@ This is copied to the memory visible at address 0 for ARM.
+@ (configurable: either LPDDR2 or Spad32K)
+@@@@@@@@@@@@@@@@@@@@@@@@@
+	.arm
+	.text
+	.section	".text.vectors"
+
+	.global VECTOR_TABLE
+VECTOR_TABLE:
+	ldr	pc, .Lreset_handler_addr	@ Reset
+	ldr	pc, .Lund_handler_addr		@ Undefined Instruction
+	ldr	pc, .Lsvc_handler_addr		@ Supervisor Call
+	ldr	pc, .Lpabt_handler_addr		@ Prefetch Abort
+	ldr	pc, .Ldabt_handler_addr		@ Data Abort
+	ldr	pc, .Lreset_handler_addr	@ <Not used>
+	ldr	pc, .Lirq_handler_addr		@ IRQ interrupt
+	ldr	pc, .Lfiq_handler_addr		@ FIQ interrupt
+
+.Lreset_handler_addr:
+	.word	_start
+.Lund_handler_addr:
+	.word	.Lund_handler
+.Lsvc_handler_addr:
+	.word	.Lsvc_handler
+.Lpabt_handler_addr:
+	.word	.Lprefetch_abort_handler
+.Ldabt_handler_addr:
+	.word	.Ldata_abort_handler
+.Lirq_handler_addr:
+	.word	.Lirq_handler
+.Lfiq_handler_addr:
+	.word	.Lfiq_handler
+
+	.word	0xFFFFFFFF	@ padding word?
+	.balign	0x80, 0		@ Align up using zero bytes
+
+	@ DIP switches that are forcefully enabled if:
+	@   - KBLParam->PsCode.product_code is 0x100 (TEST) or 0x101 (TOOL)
+	@   - KBLParam->dipsw.cp_info is 0
+	@     (CP board ID and CP version are zero)
+	.global	g_NoCP_dipsw
+g_NoCP_dipsw:
+	.word	0x00000000
+	.word	0x00000000
+	.word	0x00000000
+	.word	0x00000000
+	.word	0x80000001
+	.word	0x00000000
+	.word	0x000413E7
+	.word	0x20000010
+
+	@ Align up with zero bytes
+	.balign 0x40, 0
+
+@ End of segment 0 (size: 0xC0 bytes)
 
 @@@@@@@@@@@@@@@@@@@@@@@@@
 @ Start of KBL segment 1 head
