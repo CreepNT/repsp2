@@ -3,8 +3,8 @@
 #define _SCE_KERNEL_SYSMEM_OHEAP_H_
 
 #include <scetypes.h>
-#include <sysmem/spinlock.h>
-#include <sysmem/uid_heap.h>
+#include <kernel/sysmem/spinlock.h>
+#include <kernel/sysmem/uid_heap.h>
 
 /** Holder for underlying heap object */
 struct HeapDescriptor {

@@ -3,8 +3,8 @@
 #define _SCE_KERNEL_SYSMEM_UID_HEAP_H_
 
 #include <scetypes.h>
-#include <sysmem/oheap.h>
-#include <sysmem/uid_class.h>
+#include <kernel/sysmem/oheap.h>
+#include <kernel/sysmem/uid_class.h>
 
 /*
  * Forward declarations for circular dependencies
