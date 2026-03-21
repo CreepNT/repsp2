@@ -109,19 +109,21 @@
 /* for each CPU */
 #define STACK_SIZE		0x400
 
+#if __SCx_KBL_SECURE_BUILD
 #define	MON_STACK_BASE		0x40083900
 #define IRQ_STACK_BASE		0x40082900
 #define SVC_STACK_BASE		0x40081900
 #define UND_STACK_BASE		0x40080900
 #define ABT_STACK_BASE		0x40080900
 #define SYS_STACK_BASE		0x4007f900
-
-@@@@
-@ ALL RE DONE HERE IS FOR kernel_boot_loader START
-@ a.k.a. SKBL entrypoint
-@
-@ TODO: reverse NSKBL
-@@@@
+#else /* __SCx_KBL_SECURE_BUILD */
+/* Monitor mode is Secure state-only */
+#define IRQ_STACK_BASE		0x51048100
+#define SVC_STACK_BASE		0x51047100
+#define UND_STACK_BASE		0x51046100
+#define ABT_STACK_BASE		0x51046100
+#define SYS_STACK_BASE		0x51045100
+#endif /* __SCx_KBL_SECURE_BUILD */
 
 	.cpu cortex-a9
 	.fpu neon-fp16
@@ -133,13 +135,17 @@
 @ Imported data
 	.global	dat_4007a800
 
-@@@@@@@@@@@@@@@@@@@@@@@@@
-@ kernel_boot_loader.self segment 0
-@ (exception vector + misc. stuff)
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Exception vector & default DIP switches
 @
-@ This is copied to the memory visible at address 0 for ARM.
-@ (configurable: either LPDDR2 or Spad32K)
-@@@@@@@@@@@@@@@@@@@@@@@@@
+@ For SKBL:
+@  This section makes up segment 0 of kernel_boot_loader.self,
+@  loaded to the memory visible at physical address 0x0 for ARM:
+@  0x4000'0000 (LPDDR2) or 0x1F00'0000 (Spad32K) depending on the
+@  Pervasive2 register located at 0xE3110C00.
+@
+@ For NSKBL:
+@  This section is at the very start of decompressed NSKBL.
 	.arm
 	.text
 	.section	".text.vectors"
@@ -191,12 +197,16 @@ g_NoCP_dipsw:
 	@ Align up with zero bytes
 	.balign 0x40, 0
 
-@ End of segment 0 (size: 0xC0 bytes)
-
-@@@@@@@@@@@@@@@@@@@@@@@@@
-@ Start of KBL segment 1 head
-@@@@@@@@@@@@@@@@@@@@@@@@@
-
+@ End of ".text.vectors" section (size: 0xC0 bytes)
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ KBL initialization code and post-reset exception handlers
+@
+@ This contains the assembly bootstrap which initializes the system
+@ enough to start executing code, as well as all exception handlers
+@ which the exception vector in ".text.vectors" points to.
+@
+@ This section is at the very start of kernel_boot_loader.self segment 1
+@ for SKBL and immediately follows ".text.vectors" for NSKBL.
 	.arm
 	.text
 	.section	".text.head"
@@ -223,7 +233,11 @@ _start:
 	bic	r0, #SCTLR_TRE
 	bic	r0, #SCTLR_AFE
 	bic	r0, #SCTLR_EE
+#if __SCx_KBL_SECURE_BUILD
+	@ SKBL only: clear SCTLR.RR which is
+	@ only writeable from Secure state
 	bic	r0, #SCTLR_RR
+#endif /* __SCx_KBL_SECURE_BUILD */
 	bic	r0, #SCTLR_V
 	bic	r0, #SCTLR_I
 	bic	r0, #SCTLR_Z
@@ -269,11 +283,13 @@ _start:
 	@ (invalidate entire unified TLB - inner shareable)
 	mcr	p15, #0, r0, c8, c3, #0
 
-	@ Disable L2 cache (PL310)
+#if __SCx_KBL_SECURE_BUILD
+	@ SKBL only: disable L2 cache (PL310)
 	mov	r0, #0
 	movw	r1, #:lower16:L2C_BASE
 	movt	r1, #:upper16:L2C_BASE
 	str	r0, [r1, #L2C_OFF_REG1_CTRL]
+#endif /* __SCx_KBL_SECURE_BUILD */
 
 	@  ICIALLU: invalidate I$ PoU
 	mov	r0, #0
@@ -291,7 +307,9 @@ _start:
 	mcr	p15, #0, r0, c7, c5, #6
 	isb	sy
 
-	@ Configure ACTLR (c.f. Cortex-A9 TRM)
+#if __SCx_KBL_SECURE_BUILD
+	@ SKBL only: configure ACTLR (c.f. Cortex-A9 TRM)
+	@ ACTLR is writeable only from Secure state.
 	mov	r0, #0
 	orr	r0, r0, #0x00000040	@ ACTLR_SMP - take part in coherency
 	orr	r0, r0, #0x00000001	@ ACTLR_FW - enable cache/TLB maintenance broadcast
@@ -300,7 +318,9 @@ _start:
 	mcr	p15, #0, r0, c1, c0, #1
 
 	@
-	@ Apply workarounds for Cortex-A9 errata
+	@ SKBL only: apply workarounds for Cortex-A9 errata
+	@ The CP15 Diagnostic Control register is writeable only
+	@ from Secure state (ditto for SCU Diagnostic Control?)
 	@
 	@ The following revisions of the Cortex-A9
 	@ are explicitly documented as existing:
@@ -391,6 +411,7 @@ _start:
 	@ Apply all workarounds by writing
 	@ to the Diagnostic Control Register
 	mcr	p15, #0, r0, c15, c0, #1
+#endif /* __SCx_KBL_SECURE_BUILD */
 
 .Llab_40020128:
 	@ Disable alignment fault checking
@@ -478,7 +499,8 @@ _start:
 	cpy	lr, r1				@ because that's the mode in which KBL executes
 	msr	spsr_cxsf, r1	@ BUG!!!
 
-	@ Initialize monitor mode
+#if __SCx_KBL_SECURE_BUILD
+	@ Initialize Secure Monitor mode registers
 	bl	fun_40020a68
 
 	@ Configure FIQ exceptions to be
@@ -488,8 +510,8 @@ _start:
 	mcr	p15, #0, r0, c1, c1, #0
 
 	@ Enable dynamic clock gating
-	@ => set bit [0] in the Cortex-A9
-	@    CP15 Power Control register
+	@ => set bit [0] in the Cortex-A9 CP15 Power Control register
+	@    (this register is not writeable from Non-Secure state)
 	mrc	p15, #0, r0, c15, c0, #0
 	orr	r0, r0, #1
 	mcr	p15, #0, r0, c15, c0, #0
@@ -537,6 +559,7 @@ _start:
 	tst	r0, #NSACR_PLE
 	mov	r0, #PLEUAR_U
 	mcrne	p15, #0, r0, c11, c1, #0	@ PLEUAR
+#endif /* __SCx_KBL_SECURE_BUILD */
 
 	@ The code that follows executes only on CPU 0.
 	@ Other CPUs wait until CPU 0 is finished then
@@ -545,6 +568,7 @@ _start:
 	wfene
 	bne	.Llab_4002038c
 
+#if __SCx_KBL_SECURE_BUILD
 	@ Disable the SCU and address filtering
 	mov	r1, #SCU_BASE
 	mov	r0, #0
@@ -652,6 +676,7 @@ _start:
 	movt	r0, #:upper16:dat_4007a800
 	mov	r1, #0x0			@ "coldboot" flag
 	str	r1, [r0]
+#endif /* __SCx_KBL_SECURE_BUILD */
 
 .Llab_40020388:
 	@ CPU0-only sequence complete - wake up other CPUs
@@ -666,8 +691,9 @@ _start:
 	@ Jump to next stage...
 	ldr	pc, =reset_handler
 
-@ Address 0x4002039C: constant pool of this function
-@ containing one entry (address of reset_handler)
+@ Address 0x4002039C / 0x51000250:
+@ constant pool of this function containing one entry
+@ (the address of reset_handler)
 
 @
 @ KBL Boot exception handlers
@@ -687,11 +713,11 @@ _start:
 
 	.text
 	.section	".text.head2"
-reset_handler: @ Address: 0x400203A0
+reset_handler: @ Address: 0x400203A0 / 0x51000254
 	@ Jump to C KBL entrypoint
 	blx	boot
 
-.Lund_handler: @ Address: 0x400203A4
+.Lund_handler: @ Address: 0x400203A4 / 0x51000258
 	sub	lr, lr, #4
 	stmdb	sp!, {r0-r3, r12, lr}
 	cpy	r0, lr
@@ -699,14 +725,14 @@ reset_handler: @ Address: 0x400203A0
 	clrex
 	ldmia	sp!, {r0-r3, r12, pc}^
 
-.Lsvc_handler: @ Address: 0x400203BC
+.Lsvc_handler: @ Address: 0x400203BC / 0x51000270
 	stmdb	sp!, {r0-r12, lr}
 	cpy	r0, lr
 	blx	boot_svc_handler
 	clrex
 	ldmia	sp!, {r0-r12, pc}^
 
-.Lprefetch_abort_handler: @ Address: 0x400203D0
+.Lprefetch_abort_handler: @ Address: 0x400203D0 / 0x51000284
 	sub	lr, lr, #4
 	stmdb	sp!, {r0-r3, r12, lr}
 	cpy	r0, lr
@@ -714,7 +740,7 @@ reset_handler: @ Address: 0x400203A0
 	clrex
 	ldmia	sp!, {r0-r3, r12, pc}^
 
-.Ldata_abort_handler: @ Address: 0x400203E8
+.Ldata_abort_handler: @ Address: 0x400203E8 / 0x5100029C
 	sub	lr, lr, #8
 	stmdb	sp!, {r0-r3, r12, lr}
 	cpy	r0, lr
@@ -722,23 +748,27 @@ reset_handler: @ Address: 0x400203A0
 	clrex
 	ldmia	sp!, {r0-r3, r12, pc}^
 
-.Lirq_handler: @ Address: 0x40020400
+.Lirq_handler: @ Address: 0x40020400 / 0x510002B4
 	sub	lr, lr, #4
 	stmdb	sp!, {r0-r3, r12, lr}
 	blx	boot_irq_abort_handler
 	clrex
 	ldmia	sp!, {r0-r3, r12, pc}^
 
-.Lfiq_handler: @ Address: 0x40020414
+.Lfiq_handler: @ Address: 0x40020414 / 0x510002C8
 	sub	lr, lr, #4
 	stmdb	sp!, {r0-r3, r12, lr}
 	blx	boot_fiq_abort_handler
 	clrex
 	ldmia	sp!, {r0-r3, r12, pc}^
 
-@ NOP padding (ARM) until 0x40020430
+	@ NOP padding (ARM) until 0x40020430 / 0x510002E0
 	.balign	0x10
 
+@ NSKBL has an SMC thunk here at 0x510002E0.
+@ Maybe we should define it in this file?
+
+#if __SCx_KBL_SECURE_BUILD
 @ These functions are extremely trivial so it is
 @ surprising they weren't inlined. They must have
 @ either been assembly or in a dedicated C file.
@@ -759,6 +789,7 @@ fun_40020438:
 	.balign	0x8		@ one Thumb NOP as padding
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ this should be moved out of here!
 
 	.arm
 	.text
@@ -785,3 +816,4 @@ fun_40020a68:	@ Address: 0x40020a68 - may have been written in C?
 
 	@ return
 	bx	lr
+#endif /* __SCx_KBL_SECURE_BUILD */
