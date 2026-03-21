@@ -1,2 +1,4 @@
-.vscode/
+_artifacts/
+_build/
 _doc/
+.vscode/
