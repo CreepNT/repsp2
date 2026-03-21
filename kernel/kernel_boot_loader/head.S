@@ -187,17 +187,17 @@ _start:
 
 	@ Invalidate data cache by set/way
 	@ (note how r0 is already 0x0 from above)
-dcache_inv_next_xxx:
+.Ldcache_inv_next_xxx:
 	mov	r1, #0
-dcache_inv_next_yyy:
+.Ldcache_inv_next_yyy:
 	orr	r2, r1, r0
 	mcr	p15, #0, r2, c7, c6, #2
 	add	r1, r1, #0x40000000
 	cmp	r1, #0
-	bne 	dcache_inv_next_yyy
+	bne 	.Ldcache_inv_next_yyy
 	add 	r0, r0, #0x20
 	cmp	r0, 0x2000
-	bne 	dcache_inv_next_xxx
+	bne 	.Ldcache_inv_next_xxx
 
 	dsb	sy
 
@@ -256,10 +256,10 @@ dcache_inv_next_yyy:
 	ands	r2, r1, #0x0000000F	@ MIDR.Revision
 	ands	r1, r1, #0x00F00000	@ MIDR.Variant
 	cmp	r1, #0x00200000		@ Compare Cortex-A9 major version to r2pX
-	bgt	lab_40020128		@ >2: r3p0 or later
-	blt	lab_4002010c		@ <2: r0pX or r1pX
+	bgt	.Llab_40020128		@ >2: r3p0 or later
+	blt	.Llab_4002010c		@ <2: r0pX or r1pX
 	cmp	r2, #0x4		@ =2: check minor version
-	bge	lab_40020108		@ skip next workaround if r2p4 or later
+	bge	.Llab_40020108		@ skip next workaround if r2p4 or later
 
 	@ Workaround for erratum 742231:
 	@ "Incorrect hazard handling in the SCU might cause data corruption"
@@ -275,7 +275,7 @@ dcache_inv_next_yyy:
 	orrs	r0, r0, #0x00400000	@ Bit [22]: "Disable Write Allocate Wait Mode"
 	orrs	r0, r0, #0x00001000	@ Bit [12]: "Disable Outstanding Accesses"
 
-lab_40020108:
+.Llab_40020108:
 	@ Workaround for erratum 743622:
 	@ "Faulty logic in the Store Buffer might cause data corruption"
 	@ => Set bit [6] of the Diagnostic Control register which disables
@@ -284,7 +284,7 @@ lab_40020108:
 	@ This erratum affects all r2 revisions and is fixed in r3p0.
 	orrs	r0, r0, #0x00000040
 
-lab_4002010c:
+.Llab_4002010c:
 	@ Workaround for erratum 742230: "DMB operation might be faulty"
 	@ => Set bit [4] of the Diagnostic Control register which causes
 	@    the DMB instruction to be decoded and executed as a DSB
@@ -294,7 +294,7 @@ lab_4002010c:
 	orrs	r0, r0, #0x00000010
 
 	cmp	r2, #0x8		@ check minor version again
-	bge	lab_4002011c		@ skip next workaround if rXp8
+	bge	.Llab_4002011c		@ skip next workaround if rXp8
 
 	@ Workaround for erratum 743623: "Bad interaction between a minimum
 	@ of seven PLDs and one Non-Cacheable LDM, can lead to deadlock"
@@ -312,7 +312,7 @@ lab_4002010c:
 	@ This erratum affects all r0/r1/r2 revisions and is fixed in r3p0.
 	orrs	r0, r0,	#0x00100000	@ TODO: what this is for
 
-lab_4002011c:
+.Llab_4002011c:
 	@ Workaround for erratum 751472: "An interrupted ICIALLUIS operation
 	@ might prevent the completion of a following broadcast operation"
 	@ => Set bit [11] of the Diagnostic Control register which prevents
@@ -333,7 +333,7 @@ lab_4002011c:
 	@ to the Diagnostic Control Register
 	mcr	p15, #0, r0, c15, c0, #1
 
-lab_40020128:
+.Llab_40020128:
 	@ Disable alignment fault checking
 	mrc	p15, #0, r1, c1, c0, #0
 	bic	r1, r1, #SCTLR_A
@@ -484,7 +484,7 @@ lab_40020128:
 	@ jump over this code (they don't run it).
 	cmp	r3, #0				@ r3 holds CPU ID
 	wfene
-	bne	lab_4002038c
+	bne	.Llab_4002038c
 
 	@ Disable the SCU and address filtering
 	mov	r1, #SCU_BASE
@@ -542,19 +542,19 @@ lab_40020128:
 		@ Check "resume from suspend" flag
 	and	r2, r1, #0x80
 	cmp	r2, #0x80
-	bne	lab_40020350	@ flag not present
+	bne	.Llab_40020350	@ flag not present
 
 		@ Check wakeupFactor reason
 	and	r2, r1, #0x7F
 	cmp	r2, #0x17	@ BSOD reboot
-	beq	lab_40020350
+	beq	.Llab_40020350
 
 		@ Check BootTypeIndicator1
 	ldr	r1, [r0, #__offsetof_SceKblParam_BootTypeIndicator1]
 	mov	r2, #0x20000
 	and	r1, r1, r2
 	cmp	r1, r2
-	bne	lab_40020350
+	bne	.Llab_40020350
 
 	@ TODO: how are these addresses obtained?
 	@ seems to be a section start/end?
@@ -573,9 +573,9 @@ lab_40020128:
 	movt	r0, #:upper16:dat_4007a800
 	mov	r1, #0x10			@ "resuming" flag
 	str	r1, [r0]
-	b	lab_40020388
+	b	.Llab_40020388
 
-lab_40020350:
+.Llab_40020350:
 	@ note: the addresses are identical here
 	@ but inverted for memcpy()
 	movw	r0, #0xA800
@@ -594,11 +594,11 @@ lab_40020350:
 	mov	r1, #0x0			@ "coldboot" flag
 	str	r1, [r0]
 
-lab_40020388:
+.Llab_40020388:
 	@ CPU0-only sequence complete - wake up other CPUs
 	sev
 
-lab_4002038c:
+.Llab_4002038c:
 	@ Unmask asynchronous aborts
 	mrs	r0, cpsr
 	bic	r0, r0, #CPSR_A
@@ -632,7 +632,7 @@ reset_handler: @ Address: 0x400203A0
 	@ Jump to C KBL entrypoint
 	blx	boot
 
-und_handler: @ Address: 0x400203A4
+.Lund_handler: @ Address: 0x400203A4
 	sub	lr, lr, #4
 	stmdb	sp!, {r0-r3, r12, lr}
 	cpy	r0, lr
@@ -640,14 +640,14 @@ und_handler: @ Address: 0x400203A4
 	clrex
 	ldmia	sp!, {r0-r3, r12, pc}^
 
-svc_handler: @ Address: 0x400203BC
+.Lsvc_handler: @ Address: 0x400203BC
 	stmdb	sp!, {r0-r12, lr}
 	cpy	r0, lr
 	blx	boot_svc_handler
 	clrex
 	ldmia	sp!, {r0-r12, pc}^
 
-prefetch_abort_handler: @ Address: 0x400203D0
+.Lprefetch_abort_handler: @ Address: 0x400203D0
 	sub	lr, lr, #4
 	stmdb	sp!, {r0-r3, r12, lr}
 	cpy	r0, lr
@@ -655,7 +655,7 @@ prefetch_abort_handler: @ Address: 0x400203D0
 	clrex
 	ldmia	sp!, {r0-r12, pc}^
 
-data_abort_handler: @ Address: 0x400203E8
+.Ldata_abort_handler: @ Address: 0x400203E8
 	sub	lr, lr, #8
 	stmdb	sp!, {r0-r3, r12, lr}
 	cpy	r0, lr
@@ -663,7 +663,7 @@ data_abort_handler: @ Address: 0x400203E8
 	clrex
 	ldmia	sp!, {r0-r3, r12, pc}^
 
-irq_handler: @ Address: 0x40020400
+.Lirq_handler: @ Address: 0x40020400
 	sub	lr, lr, #4
 	stmdb	sp!, {r0-r3, r12, lr}
 	cpy	r0, lr
@@ -671,7 +671,7 @@ irq_handler: @ Address: 0x40020400
 	clrex
 	ldmia	sp!, {r0-r3, r12, pc}^
 
-fiq_handler: @ Address: 0x40020414
+.Lfiq_handler: @ Address: 0x40020414
 	sub	lr, lr, #4
 	stmdb	sp!, {r0-r3, r12, lr}
 	cpy	r0, lr
