@@ -110,14 +110,12 @@
 #define STACK_SIZE		0x400
 
 #if __SCx_KBL_SECURE_BUILD
-#define	MON_STACK_BASE		0x40083900
 #define IRQ_STACK_BASE		0x40082900
 #define SVC_STACK_BASE		0x40081900
 #define UND_STACK_BASE		0x40080900
 #define ABT_STACK_BASE		0x40080900
 #define SYS_STACK_BASE		0x4007f900
 #else /* __SCx_KBL_SECURE_BUILD */
-/* Monitor mode is Secure state-only */
 #define IRQ_STACK_BASE		0x51048100
 #define SVC_STACK_BASE		0x51047100
 #define UND_STACK_BASE		0x51046100
@@ -787,33 +785,4 @@ fun_40020438:
 	mov.w	r0, #0x11C
 	bx	lr
 	.balign	0x8		@ one Thumb NOP as padding
-
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@ this should be moved out of here!
-
-	.arm
-	.text
-	.section	".text.long_after_head"
-fun_40020a68:	@ Address: 0x40020a68 - may have been written in C?
-	@ read CPU ID
-	mrc	p15, #0, r3, c0, c0, #5		@ MPIDR
-	and	r3, r3, #0xF
-
-	@ compute stack base for this CPU
-	mov	r0, #STACK_SIZE
-	mul	r0, r3, r0
-
-	@ Initialize sp_mon, lr_mon and spsr_mon
-	cpsid	if, #MODE_MON
-	ldr	sp, =MON_STACK_BASE	@ data is at 0x40020B1C (!!!)
-	sub	sp, sp, r0
-	mov	r1, #0
-	cpy	lr, r1
-	msr	spsr_cxsf, r1
-
-	@ Go back into System mode
-	cpsid	if, #MODE_SYS
-
-	@ return
-	bx	lr
 #endif /* __SCx_KBL_SECURE_BUILD */
